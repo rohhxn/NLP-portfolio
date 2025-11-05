@@ -10,31 +10,183 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        /* Applying Inter font as the default */
-        body {
-            font-family: 'Inter', sans-serif;
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#667eea',
+                        secondary: '#764ba2',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.6s ease-out',
+                        'spin-slow': 'spin 0.5s ease-in-out',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            'from': { opacity: '0', transform: 'translateY(30px)' },
+                            'to': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    },
+                    backdropBlur: {
+                        xs: '2px',
+                    }
+                }
+            }
         }
-        /* Simple scroll-padding-top for better navigation */
-        html {
-            scroll-padding-top: 6rem; /* Adjust based on your nav height */
-            scroll-behavior: smooth;
+    </script>
+    
+    <style>
+        @layer utilities {
+            /* Navigation hover effects */
+            .nav-link::after {
+                content: '';
+                @apply absolute bottom-0 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300;
+            }
+            .nav-link:hover::after {
+                @apply w-full;
+            }
+            
+            /* Card hover effects with shimmer */
+            .card-hover::before {
+                content: '';
+                @apply absolute top-0 -left-full w-full h-full pointer-events-none;
+                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+                transition: left 0.5s ease;
+                border-radius: inherit;
+            }
+            .card-hover:hover::before {
+                left: 100%;
+            }
+            
+            /* Animated underline for headings */
+            .animated-underline::after {
+                content: '';
+                @apply absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-0.5 transition-all duration-300;
+                background: linear-gradient(90deg, #667eea, #764ba2);
+            }
+            .animated-underline:hover::after {
+                @apply w-full;
+            }
+        }
+        
+        @layer components {
+            /* Glassmorphism card */
+            .glass-card {
+                background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+                @apply backdrop-blur-md border border-white/30;
+                position: relative;
+                z-index: 1;
+            }
+            
+            /* Dropdown content */
+            .dropdown-content {
+                max-height: 0;
+                @apply overflow-hidden transition-all duration-300 ease-out;
+                opacity: 0;
+                padding-bottom: 0;
+            }
+            .dropdown-content.active {
+                max-height: 2000px;
+                @apply transition-all duration-500 ease-in;
+                opacity: 1;
+                padding-bottom: 1.5rem;
+            }
+            
+            /* Dropdown arrow rotation */
+            .dropdown-arrow {
+                @apply transition-transform duration-300;
+            }
+            .dropdown-arrow.rotated {
+                @apply rotate-180;
+            }
+        }
+        
+        @layer base {
+            html {
+                @apply scroll-smooth;
+                scroll-padding-top: 6rem;
+            }
+            
+            body {
+                background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #8b5cf6 100%);
+                @apply bg-fixed font-sans;
+            }
+            
+            main {
+                background: rgba(255, 255, 255, 0.98);
+                @apply backdrop-blur-md rounded-3xl shadow-2xl;
+                margin: 20px auto;
+                padding-bottom: 3rem;
+                min-height: 90vh;
+            }
+            
+            header {
+                background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+                @apply backdrop-blur-md transition-all duration-300;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+            
+            section {
+                @apply transition-all duration-300;
+                position: relative;
+                z-index: 1;
+            }
+            
+            li {
+                @apply transition-all duration-200;
+            }
+            li:hover {
+                @apply translate-x-1 text-blue-600;
+            }
+            
+            /* Custom scrollbar */
+            ::-webkit-scrollbar {
+                @apply w-3;
+            }
+            ::-webkit-scrollbar-track {
+                @apply bg-gray-100;
+            }
+            ::-webkit-scrollbar-thumb {
+                @apply rounded-md;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            }
+            ::-webkit-scrollbar-thumb:hover {
+                background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            }
+        }
+        
+        /* Icon spin animation */
+        .icon-spin:hover {
+            animation: spin 0.5s ease-in-out;
+        }
+        
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
         }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
+<body class="text-gray-800">
 
     <!-- Header & Navigation Bar -->
-    <header class="bg-white shadow-md fixed w-full z-10">
+    <header class="shadow-md fixed w-full z-10">
         <nav class="container mx-auto px-6 py-4 flex flex-wrap justify-center sm:justify-between items-center">
-            <a href="#" class="text-2xl font-bold text-blue-600 mb-2 sm:mb-0">NLP Portfolio</a>
+            <a href="#" class="text-2xl font-bold text-white mb-2 sm:mb-0 hover:scale-105 transition-transform duration-300">NLP Portfolio</a>
             <div class="space-x-2 sm:space-x-4 text-center">
-                <a href="#home" class="text-gray-600 hover:text-blue-600 font-medium">Home</a>
-                <a href="#unit-1" class="text-gray-600 hover:text-blue-600 font-medium">Unit 1</a>
-                <a href="#unit-2" class="text-gray-600 hover:text-blue-600 font-medium">Unit 2</a>
-                <a href="#unit-3" class="text-gray-600 hover:text-blue-600 font-medium">Unit 3</a>
-                <a href="#unit-4" class="text-gray-600 hover:text-blue-600 font-medium">Unit 4</a>
-                <a href="#unit-5" class="text-gray-600 hover:text-blue-600 font-medium">Unit 5</a>
+                <a href="#about" class="relative text-white hover:text-gray-200 font-medium transition-colors duration-300 nav-link">About Me</a>
+                <a href="#home" class="relative text-white hover:text-gray-200 font-medium transition-colors duration-300 nav-link">Home</a>
+                <a href="#unit-1" class="relative text-white hover:text-gray-200 font-medium transition-colors duration-300 nav-link">Unit 1</a>
+                <a href="#unit-2" class="relative text-white hover:text-gray-200 font-medium transition-colors duration-300 nav-link">Unit 2</a>
+                <a href="#unit-3" class="relative text-white hover:text-gray-200 font-medium transition-colors duration-300 nav-link">Unit 3</a>
+                <a href="#unit-4" class="relative text-white hover:text-gray-200 font-medium transition-colors duration-300 nav-link">Unit 4</a>
+                <a href="#unit-5" class="relative text-white hover:text-gray-200 font-medium transition-colors duration-300 nav-link">Unit 5</a>
             </div>
         </nav>
     </header>
@@ -42,25 +194,151 @@
     <!-- Main Content Area -->
     <main class="container mx-auto px-6 pt-32"> <!-- pt-32 to offset fixed header -->
 
+        <!-- About Me Section -->
+        <section id="about" class="glass-card p-8 rounded-xl shadow-lg mb-16 relative transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl animate-fade-in-up">
+            <h2 class="text-4xl font-bold text-white mb-6 text-center relative inline-block animated-underline">About Me</h2>
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl font-semibold text-white mb-2">Rohan S</h3>
+                    <p class="text-xl text-white/90">Final Year Student | Bachelor of Science in Computer Science</p>
+                    <p class="text-lg text-white/80 mt-2">SRM Institute of Science and Technology, Chennai</p>
+                    <p class="text-md text-white/80">Sep 2022 - May 2026</p>
+                    <a href="https://linkedin.com/in/rohan-s-027272251" target="_blank" class="inline-block mt-3 text-white hover:text-yellow-300 font-medium transition-colors duration-300">
+                        <svg class="w-5 h-5 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6.29 18.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0020 3.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.073 4.073 0 01.8 7.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 010 16.407a11.616 11.616 0 006.29 1.84"></path>
+                        </svg>
+                        LinkedIn Profile
+                    </a>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <!-- Technical Skills Section -->
+                    <div class="relative bg-white/95 p-6 rounded-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl border border-blue-200">
+                        <h4 class="text-xl font-semibold text-blue-800 mb-4 flex items-center">
+                            <svg class="w-5 h-5 mr-2 icon-spin" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 3.5a1.5 1.5 0 013 0V4a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-.5a1.5 1.5 0 000 3h.5a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-.5a1.5 1.5 0 00-3 0v.5a1 1 0 01-1 1H4a1 1 0 01-1-1v-3a1 1 0 00-1-1h-.5a1.5 1.5 0 010-3H2a1 1 0 001-1V6a1 1 0 011-1h3a1 1 0 001-1v-.5z"></path>
+                            </svg>
+                            Technical Skills
+                        </h4>
+                        <div class="space-y-3 text-gray-700">
+                            <div>
+                                <p class="font-semibold text-gray-700">Languages:</p>
+                                <p>Python, Java, C++, C, HTML/CSS, JavaScript, SQL</p>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-gray-700">Developer Tools:</p>
+                                <p>VS Code, Anaconda, Python Notebook, IntelliJ IDEA</p>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-gray-700">Technologies:</p>
+                                <p>RedHat System Administrator, ServiceNow</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Certifications Section -->
+                    <div class="relative bg-white/95 p-6 rounded-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl border border-blue-200">
+                        <h4 class="text-xl font-semibold text-blue-800 mb-4 flex items-center">
+                            <svg class="w-5 h-5 mr-2 icon-spin" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
+                                <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path>
+                            </svg>
+                            Professional Certifications
+                        </h4>
+                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                            <li><strong>RedHat Certified System Administrator</strong> - Linux system administration and RHEL configuration</li>
+                            <li><strong>ServiceNow Certified System Administrator</strong> - Platform administration and security</li>
+                            <li><strong>ServiceNow Certified Application Developer</strong> - Application design and automation</li>
+                            <li><strong>NPTEL Certifications</strong> - Database Management, Computer Architecture, Programming in Java (ELITE merit)</li>
+                            <li><strong>MathWorks MATLAB</strong> - Deep Learning, Machine Learning, Image Processing</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Projects Section -->
+                    <div class="relative bg-white/95 p-6 rounded-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl border border-blue-200">
+                        <h4 class="text-xl font-semibold text-blue-800 mb-4 flex items-center">
+                            <svg class="w-5 h-5 mr-2 icon-spin" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                            Key Projects
+                        </h4>
+                        <ul class="space-y-3 text-gray-700">
+                            <li>
+                                <p class="font-semibold text-gray-800">Invoice Management System</p>
+                                <p class="text-sm">Java, SQL, PHP - Comprehensive billing and invoice tracking system with automated features</p>
+                            </li>
+                            <li>
+                                <p class="font-semibold text-gray-800">Heart Failure Detection System</p>
+                                <p class="text-sm">Python - ML model with 85% accuracy using Random Forest, SVM, and Neural Networks</p>
+                            </li>
+                            <li>
+                                <p class="font-semibold text-gray-800">Image Caption Generator</p>
+                                <p class="text-sm">Python - Deep learning model using VGG16 and LSTM with 70% accuracy</p>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Publications Section -->
+                    <div class="relative bg-white/95 p-6 rounded-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl border border-blue-200">
+                        <h4 class="text-xl font-semibold text-blue-800 mb-4 flex items-center">
+                            <svg class="w-5 h-5 mr-2 icon-spin" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"></path>
+                            </svg>
+                            Publications
+                        </h4>
+                        <div class="space-y-3 text-gray-700">
+                            <div>
+                                <p class="font-semibold text-gray-900">AI-Driven Optimization and Explainable Analytics for Sustainable Cooling Tower Performance</p>
+                                <p class="text-sm italic text-blue-700">IEEE International Conference, June 2025</p>
+                                <p class="text-sm mt-1 text-gray-700">Developed an AI-driven framework for energy optimization with explainable AI techniques and sustainable cooling solutions</p>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6">
+                            <p class="font-semibold text-gray-900 mb-2">Relevant Coursework:</p>
+                            <div class="grid grid-cols-2 gap-2 text-sm text-gray-700">
+                                <p>• Data Structures</p>
+                                <p>• Algorithms Analysis</p>
+                                <p>• Software Methodology</p>
+                                <p>• Database Management</p>
+                                <p>• Artificial Intelligence</p>
+                                <p>• Data Science</p>
+                                <p>• Systems Programming</p>
+                                <p>• Computer Architecture</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Home/Hero Section -->
-        <section id="home" class="text-center py-20">
-            <h1 class="text-5xl font-bold text-gray-900 mb-4">Natural Language Processing</h1>
-            <p class="text-2xl text-gray-700 mb-6">A Course Portfolio for 21CSE356T</p>
-            <p class="text-lg text-gray-600 max-w-2xl mx-auto">This website summarizes the key concepts and applications learned across the course, from foundational principles to modern Transformer models.</p>
+        <section id="home" class="text-center py-20 animate-fade-in-up">
+            <h1 class="text-5xl font-bold text-gray-900 mb-4 relative inline-block animated-underline">Natural Language Processing</h1>
+            <p class="text-2xl text-gray-800 mb-6 font-semibold">A Course Portfolio for 21CSE356T</p>
+            <p class="text-lg text-gray-700 max-w-2xl mx-auto">This website summarizes the key concepts and applications learned across the course, from foundational principles to modern Transformer models.</p>
         </section>
 
         <!-- Course Content Section -->
-        <div class="space-y-16 mb-24">
+        <div class="space-y-16 mb-16">
 
             <!-- Unit 1: Introduction to NLP -->
-            <section id="unit-1" class="bg-white p-8 rounded-xl shadow-lg">
-                <h2 class="text-3xl font-bold text-gray-900 mb-6">Unit 1: Introduction to NLP</h2>
-                <p class="text-lg text-gray-700 mb-6">This unit established the fundamentals of Natural Language Processing, defining what it is, why it's needed, and the basic steps for processing text.</p>
-                <div class="grid md:grid-cols-2 gap-6">
+            <section id="unit-1" class="glass-card p-8 rounded-xl shadow-lg relative transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+                <div class="flex justify-between items-center cursor-pointer hover:bg-gray-50/50 rounded-lg p-2 -m-2 transition-colors duration-200" onclick="toggleDropdown('unit1')">
+                    <h2 class="text-3xl font-bold text-white">Unit 1: Introduction to NLP</h2>
+                    <svg class="dropdown-arrow w-6 h-6 text-gray-600" id="arrow-unit1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </div>
+                <div class="dropdown-content bg-white/95 rounded-lg mt-4 shadow-inner" id="content-unit1">
+                    <p class="text-lg text-gray-800 mb-6 mt-6 px-2 font-medium">This unit established the fundamentals of Natural Language Processing, defining what it is, why it's needed, and the basic steps for processing text.</p>
+                    <div class="grid md:grid-cols-2 gap-6 px-2">
                     <!-- Column 1 -->
-                    <div class="bg-gray-50 p-6 rounded-lg">
-                        <h3 class="text-xl font-semibold text-blue-700 mb-3">Core Concepts & Pipeline</h3>
-                        <ul class="list-disc list-inside space-y-2 text-gray-600">
+                    <div class="bg-blue-50 p-6 rounded-lg border border-blue-200">
+                        <h3 class="text-xl font-semibold text-blue-800 mb-3">Core Concepts & Pipeline</h3>
+                        <ul class="list-disc list-inside space-y-2 text-gray-800">
                             <li><strong>What is NLP:</strong> A field of AI that enables computers to understand and process human language.</li>
                             <li><strong>Why NLP:</strong> Needed to make sense of the vast amount of unstructured text data.</li>
                             <li><strong>NLP Pipeline:</strong>
@@ -76,9 +354,9 @@
                         </ul>
                     </div>
                     <!-- Column 2 -->
-                    <div class="bg-gray-50 p-6 rounded-lg">
-                        <h3 class="text-xl font-semibold text-blue-700 mb-3">Basic Text Processing</h3>
-                        <ul class="list-disc list-inside space-y-2 text-gray-600">
+                    <div class="bg-blue-50 p-6 rounded-lg border border-blue-200">
+                        <h3 class="text-xl font-semibold text-blue-800 mb-3">Basic Text Processing</h3>
+                        <ul class="list-disc list-inside space-y-2 text-gray-800">
                             <li><strong>Tokenization:</strong> Splitting text into individual words or tokens.</li>
                             <li><strong>Stemming & Lemmatization:</strong> Reducing words to their root form (e.g., "running" -> "run").</li>
                             <li><strong>POS Tagging:</strong> Assigning parts of speech (noun, verb, adj) to each token.</li>
@@ -87,18 +365,25 @@
                             <li><strong>Word Representation:</strong> Representing words as vectors that capture their meaning.</li>
                         </ul>
                     </div>
+                    </div>
                 </div>
             </section>
 
             <!-- Unit 2: Syntax & Semantic Parsing -->
-            <section id="unit-2" class="bg-white p-8 rounded-xl shadow-lg">
-                <h2 class="text-3xl font-bold text-gray-900 mb-6">Unit 2: Syntax & Semantic Parsing</h2>
-                <p class="text-lg text-gray-700 mb-6">This unit dove into how we analyze the grammatical structure of sentences (syntax) and how we formally represent their meaning (semantics).</p>
-                <div class="grid md:grid-cols-2 gap-6">
+            <section id="unit-2" class="glass-card p-8 rounded-xl shadow-lg relative transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+                <div class="flex justify-between items-center cursor-pointer hover:bg-gray-50/50 rounded-lg p-2 -m-2 transition-colors duration-200" onclick="toggleDropdown('unit2')">
+                    <h2 class="text-3xl font-bold text-white">Unit 2: Syntax & Semantic Parsing</h2>
+                    <svg class="dropdown-arrow w-6 h-6 text-gray-600" id="arrow-unit2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </div>
+                <div class="dropdown-content bg-white/95 rounded-lg mt-4 shadow-inner" id="content-unit2">
+                    <p class="text-lg text-gray-800 mb-6 mt-6 px-2 font-medium">This unit dove into how we analyze the grammatical structure of sentences (syntax) and how we formally represent their meaning (semantics).</p>
+                    <div class="grid md:grid-cols-2 gap-6 px-2">
                     <!-- Column 1 -->
-                    <div class="bg-gray-50 p-6 rounded-lg">
-                        <h3 class="text-xl font-semibold text-blue-700 mb-3">Syntax (Sentence Structure)</h3>
-                        <ul class="list-disc list-inside space-y-2 text-gray-600">
+                    <div class="bg-blue-50 p-6 rounded-lg border border-blue-200">
+                        <h3 class="text-xl font-semibold text-blue-800 mb-3">Syntax (Sentence Structure)</h3>
+                        <ul class="list-disc list-inside space-y-2 text-gray-800">
                             <li><strong>Syntax Parsing:</strong> Analyzing the grammatical structure of a sentence.</li>
                             <li><strong>Constituency Parsing:</strong> Building a "parse tree" that breaks a sentence into nested phrases (e.g., Noun Phrase, Verb Phrase).</li>
                             <li><strong>Dependency Parsing:</strong> Creating a graph showing how words (e.g., subject, object) are grammatically related to each other (their dependencies).</li>
@@ -106,27 +391,34 @@
                         </ul>
                     </div>
                     <!-- Column 2 -->
-                    <div class="bg-gray-50 p-6 rounded-lg">
-                        <h3 class="text-xl font-semibold text-blue-700 mb-3">Semantics (Literal Meaning)</h3>
-                        <ul class="list-disc list-inside space-y-2 text-gray-600">
+                    <div class="bg-blue-50 p-6 rounded-lg border border-blue-200">
+                        <h3 class="text-xl font-semibold text-blue-800 mb-3">Semantics (Literal Meaning)</h3>
+                        <ul class="list-disc list-inside space-y-2 text-gray-800">
                             <li><strong>Semantic Parsing:</strong> Converting a natural language sentence into a formal, executable meaning (like an SQL query).</li>
                             <li><strong>Lexical Ambiguity:</strong> When a single word has multiple meanings (e.g., "bank" as a river bank or a financial institution).</li>
                             <li><strong>Word Sense Disambiguation (WSD):</strong> The task of algorithmically choosing the correct meaning of a word based on its context.</li>
                             <li><strong>Pronoun/Anaphora Resolution:</strong> Figuring out what a pronoun ("he", "she", "it") refers to (its "antecedent").</li>
                         </ul>
                     </div>
+                    </div>
                 </div>
             </section>
 
             <!-- Unit 3: Semantic & Discourse Analysis -->
-            <section id="unit-3" class="bg-white p-8 rounded-xl shadow-lg">
-                <h2 class="text-3xl font-bold text-gray-900 mb-6">Unit 3: Semantic & Discourse Analysis</h2>
-                <p class="text-lg text-gray-700 mb-6">This unit focused on how computers can understand the *meaning* of language (semantics) and the *flow* of text beyond single sentences (discourse).</p>
-                <div class="grid md:grid-cols-2 gap-6">
+            <section id="unit-3" class="glass-card p-8 rounded-xl shadow-lg relative transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+                <div class="flex justify-between items-center cursor-pointer hover:bg-gray-50/50 rounded-lg p-2 -m-2 transition-colors duration-200" onclick="toggleDropdown('unit3')">
+                    <h2 class="text-3xl font-bold text-white">Unit 3: Semantic & Discourse Analysis</h2>
+                    <svg class="dropdown-arrow w-6 h-6 text-gray-600" id="arrow-unit3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </div>
+                <div class="dropdown-content bg-white/95 rounded-lg mt-4 shadow-inner" id="content-unit3">
+                    <p class="text-lg text-gray-800 mb-6 mt-6 px-2 font-medium">This unit focused on how computers can understand the *meaning* of language (semantics) and the *flow* of text beyond single sentences (discourse).</p>
+                    <div class="grid md:grid-cols-2 gap-6 px-2">
                     <!-- Column 1 -->
-                    <div class="bg-gray-50 p-6 rounded-lg">
-                        <h3 class="text-xl font-semibold text-blue-700 mb-3">Semantic Analysis (Meaning)</h3>
-                        <ul class="list-disc list-inside space-y-2 text-gray-600">
+                    <div class="bg-blue-50 p-6 rounded-lg border border-blue-200">
+                        <h3 class="text-xl font-semibold text-blue-800 mb-3">Semantic Analysis (Meaning)</h3>
+                        <ul class="list-disc list-inside space-y-2 text-gray-800">
                             <li><strong>Lexical Semantics:</strong> Word-level meaning (synonyms, antonyms, polysemy).</li>
                             <li><strong>Word Senses:</strong> Understanding that words have multiple meanings (Word Sense Disambiguation - WSD).</li>
                             <li><strong>Word Embeddings:</strong> Representing words as vectors (Word2Vec, CBOW, Skip-gram, GloVe).</li>
@@ -135,27 +427,34 @@
                         </ul>
                     </div>
                     <!-- Column 2 -->
-                    <div class="bg-gray-50 p-6 rounded-lg">
-                        <h3 class="text-xl font-semibold text-blue-700 mb-3">Discourse Analysis (Context & Flow)</h3>
-                        <ul class="list-disc list-inside space-y-2 text-gray-600">
+                    <div class="bg-blue-50 p-6 rounded-lg border border-blue-200">
+                        <h3 class="text-xl font-semibold text-blue-800 mb-3">Discourse Analysis (Context & Flow)</h3>
+                        <ul class="list-disc list-inside space-y-2 text-gray-800">
                             <li><strong>Discourse Structure:</strong> Analyzing how sentences and paragraphs are organized to create a coherent whole.</li>
                             <li><strong>Text Coherence:</strong> Identifying the properties that make a text logical and easy to understand.</li>
                             <li><strong>Reference Resolution:</strong> Solving what pronouns ("he", "she", "it") refer to using Coreference and Anaphora Resolution.</li>
                             <li><strong>Key Tasks:</strong> Includes Intent Detection (finding a user's goal) and Paraphrase Extraction (finding alternate phrasings).</li>
                         </ul>
                     </div>
+                    </div>
                 </div>
             </section>
 
             <!-- Unit 4: Modern NLP Models & Applications -->
-            <section id="unit-4" class="bg-white p-8 rounded-xl shadow-lg">
-                <h2 class="text-3xl font-bold text-gray-900 mb-6">Unit 4: Modern NLP Models & Applications</h2>
-                <p class="text-lg text-gray-700 mb-6">This unit explored the architectures that power modern NLP, from sequential models to the revolutionary Transformer, and the real-world tasks they solve.</p>
-                <div class="grid md:grid-cols-2 gap-6">
+            <section id="unit-4" class="glass-card p-8 rounded-xl shadow-lg relative transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+                <div class="flex justify-between items-center cursor-pointer hover:bg-gray-50/50 rounded-lg p-2 -m-2 transition-colors duration-200" onclick="toggleDropdown('unit4')">
+                    <h2 class="text-3xl font-bold text-white">Unit 4: Modern NLP Models & Applications</h2>
+                    <svg class="dropdown-arrow w-6 h-6 text-gray-600" id="arrow-unit4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </div>
+                <div class="dropdown-content bg-white/95 rounded-lg mt-4 shadow-inner" id="content-unit4">
+                    <p class="text-lg text-gray-800 mb-6 mt-6 px-2 font-medium">This unit explored the architectures that power modern NLP, from sequential models to the revolutionary Transformer, and the real-world tasks they solve.</p>
+                    <div class="grid md:grid-cols-2 gap-6 px-2">
                     <!-- Column 1 -->
-                    <div class="bg-gray-50 p-6 rounded-lg">
-                        <h3 class="text-xl font-semibold text-blue-700 mb-3">Core Architectures</h3>
-                        <ul class="list-disc list-inside space-y-2 text-gray-600">
+                    <div class="bg-blue-50 p-6 rounded-lg border border-blue-200">
+                        <h3 class="text-xl font-semibold text-blue-800 mb-3">Core Architectures</h3>
+                        <ul class="list-disc list-inside space-y-2 text-gray-800">
                             <li><strong>RNN & LSTM:</strong> Sequential models (Recurrent Neural Networks, Long Short-Term Memory) that process text step-by-step, good for learning long-range dependencies.</li>
                             <li><strong>Attention Mechanism:</strong> A key innovation allowing a model to focus on the most relevant parts of an input sequence.</li>
                             <li><strong>The Transformer:</strong> A non-sequential model based entirely on Self-Attention and Multi-Headed Attention, enabling parallel training and superior context understanding.</li>
@@ -163,9 +462,9 @@
                         </ul>
                     </div>
                     <!-- Column 2 -->
-                    <div class="bg-gray-50 p-6 rounded-lg">
-                        <h3 class="text-xl font-semibold text-blue-700 mb-3">Key Applications</h3>
-                        <ul class="list-disc list-inside space-y-2 text-gray-600">
+                    <div class="bg-blue-50 p-6 rounded-lg border border-blue-200">
+                        <h3 class="text-xl font-semibold text-blue-800 mb-3">Key Applications</h3>
+                        <ul class="list-disc list-inside space-y-2 text-gray-800">
                             <li><strong>Information Extraction (IE):</strong> Pulling structured data (names, dates) from text.</li>
                             <li><strong>Information Retrieval (IR):</strong> Finding relevant documents (how search engines work).</li>
                             <li><strong>Semantic Search:</strong> Searching based on *meaning* and *intent*, not just keywords.</li>
@@ -174,43 +473,208 @@
                             <li><strong>Machine Translation:</strong> Automatically translating between languages (e.g., Neural Machine Translation).</li>
                         </ul>
                     </div>
+                    </div>
                 </div>
             </section>
 
             <!-- Unit 5: Probabilistic & Statistical NLP -->
-            <section id="unit-5" class="bg-white p-8 rounded-xl shadow-lg">
-                <h2 class="text-3xl font-bold text-gray-900 mb-6">Unit 5: Probabilistic & Statistical NLP</h2>
-                <p class="text-lg text-gray-700 mb-6">This unit covered the foundational methods of using probability and statistics to model the uncertainty and patterns inherent in human language.</p>
-                <div class="grid md:grid-cols-2 gap-6">
+            <section id="unit-5" class="glass-card p-8 rounded-xl shadow-lg relative transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl mb-8">
+                <div class="flex justify-between items-center cursor-pointer hover:bg-white/20 rounded-lg p-2 -m-2 transition-colors duration-200" onclick="toggleDropdown('unit5')">
+                    <h2 class="text-3xl font-bold text-white">Unit 5: Probabilistic & Statistical NLP</h2>
+                    <svg class="dropdown-arrow w-6 h-6 text-gray-600" id="arrow-unit5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </div>
+                <div class="dropdown-content bg-white/95 rounded-lg mt-4 shadow-inner" id="content-unit5">
+                    <p class="text-lg text-gray-800 mb-6 mt-6 px-2 font-medium">This unit covered the foundational methods of using probability and statistics to model the uncertainty and patterns inherent in human language.</p>
+                    <div class="grid md:grid-cols-2 gap-6 px-2">
                     <!-- Column 1 -->
-                    <div class="bg-gray-50 p-6 rounded-lg">
-                        <h3 class="text-xl font-semibold text-blue-700 mb-3">Core Concepts</h3>
-                        <ul class="list-disc list-inside space-y-2 text-gray-600">
+                    <div class="bg-blue-50 p-6 rounded-lg border border-blue-200">
+                        <h3 class="text-xl font-semibold text-blue-800 mb-3">Core Concepts</h3>
+                        <ul class="list-disc list-inside space-y-2 text-gray-800">
                             <li><strong>Probabilistic Models:</strong> Using probability to predict outcomes, like a Language Model (LM) predicting the next word based on n-grams (unigram, bigram).</li>
                             <li><strong>Statistical Approaches:</strong> Applying classic machine learning algorithms (like Naive Bayes, Hidden Markov Models) to NLP tasks.</li>
                             <li><strong>Sequence Labeling:</strong> A core task of assigning a label to each token in a sequence, such as Part-of-Speech (POS) Tagging or Named Entity Recognition (NER).</li>
                         </ul>
                     </div>
                     <!-- Column 2 -->
-                    <div class="bg-gray-50 p-6 rounded-lg">
-                        <h3 class="text-xl font-semibold text-blue-700 mb-3">Text Representation & Similarity</h3>
-                        <ul class="list-disc list-inside space-y-2 text-gray-600">
+                    <div class="bg-blue-50 p-6 rounded-lg border border-blue-200">
+                        <h3 class="text-xl font-semibold text-blue-800 mb-3">Text Representation & Similarity</h3>
+                        <ul class="list-disc list-inside space-y-2 text-gray-800">
                             <li><strong>Text Similarity:</strong> Calculating how "alike" two texts are using measures like Jaccard Similarity, Euclidean Distance, and Cosine Similarity.</li>
                             <li><strong>Embeddings:</strong> Representing words (CBOW, Skip-gram) and sentences as dense vectors to feed into statistical models.</li>
                             <li><strong>Neural Models:</strong> Using RNNs and LSTMs as advanced methods for modeling sequential data, building upon statistical foundations.</li>
                         </ul>
                     </div>
+                    </div>
                 </div>
             </section>
 
         </div>
+        
+        <!-- Spacer for better visual separation -->
+        <div class="h-20"></div>
+        
+        <!-- Decorative bottom gradient -->
+        <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-blue-100 to-transparent pointer-events-none rounded-b-3xl"></div>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 text-gray-300 p-8 text-center">
-        <p>&copy;2025 Rohan S - NLP Course Portfolio</p>
-        <p class="mt-2 text-sm">NLP 21CSE356T</p>
+    <footer class="bg-gradient-to-r from-gray-800 via-gray-900 to-gray-800 text-gray-200 py-10 px-6 text-center mt-0 shadow-2xl">
+        <div class="max-w-4xl mx-auto">
+            <p class="text-lg font-semibold">&copy;2025 Rohan S - NLP Course Portfolio</p>
+            <p class="mt-3 text-sm"><a href="https://github.com/rohhxn/NLP-portfolio" target="_blank" class="text-blue-400 hover:text-blue-300 underline transition-colors duration-300 font-medium">https://github.com/rohhxn/NLP-portfolio</a></p>
+            <div class="mt-4 pt-4 border-t border-gray-700">
+                <p class="text-xs text-gray-400">Built with passion for Natural Language Processing</p>
+            </div>
+        </div>
     </footer>
+
+    <script>
+        // Toggle dropdown function
+        function toggleDropdown(unitId) {
+            const content = document.getElementById('content-' + unitId);
+            const arrow = document.getElementById('arrow-' + unitId);
+            
+            content.classList.toggle('active');
+            arrow.classList.toggle('rotated');
+        }
+        
+        // Intersection Observer for fade-in animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animation = 'fadeInUp 0.6s ease-out forwards';
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+            
+            // Observe all sections
+            document.querySelectorAll('section').forEach(section => {
+                observer.observe(section);
+            });
+            
+            // Smooth scroll with offset for fixed navbar
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        const offset = 100;
+                        const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
+                        window.scrollTo({
+                            top: targetPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // Add parallax effect to background
+            let ticking = false;
+            window.addEventListener('scroll', function() {
+                if (!ticking) {
+                    window.requestAnimationFrame(function() {
+                        const scrolled = window.pageYOffset;
+                        document.body.style.backgroundPosition = 'center ' + (scrolled * 0.5) + 'px';
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            });
+            
+            // Add hover effect to list items
+            document.querySelectorAll('li').forEach(item => {
+                item.addEventListener('mouseenter', function() {
+                    this.style.transition = 'all 0.2s ease';
+                });
+            });
+            
+            // Navbar scroll effect
+            let lastScroll = 0;
+            window.addEventListener('scroll', function() {
+                const currentScroll = window.pageYOffset;
+                const navbar = document.querySelector('header');
+                
+                if (currentScroll > lastScroll && currentScroll > 100) {
+                    navbar.style.transform = 'translateY(-100%)';
+                } else {
+                    navbar.style.transform = 'translateY(0)';
+                }
+                
+                if (currentScroll > 50) {
+                    navbar.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.2)';
+                } else {
+                    navbar.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
+                }
+                
+                lastScroll = currentScroll;
+            });
+            
+            // Add typing effect to main heading
+            const mainHeading = document.querySelector('#home h1');
+            if (mainHeading) {
+                const text = mainHeading.textContent;
+                mainHeading.textContent = '';
+                let i = 0;
+                
+                function typeWriter() {
+                    if (i < text.length) {
+                        mainHeading.textContent += text.charAt(i);
+                        i++;
+                        setTimeout(typeWriter, 100);
+                    }
+                }
+                
+                setTimeout(typeWriter, 500);
+            }
+            
+            // Add click ripple effect to buttons
+            document.querySelectorAll('.cursor-pointer').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    const ripple = document.createElement('span');
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+                    
+                    ripple.style.width = ripple.style.height = size + 'px';
+                    ripple.style.left = x + 'px';
+                    ripple.style.top = y + 'px';
+                    ripple.style.position = 'absolute';
+                    ripple.style.borderRadius = '50%';
+                    ripple.style.background = 'rgba(255, 255, 255, 0.5)';
+                    ripple.style.pointerEvents = 'none';
+                    ripple.style.animation = 'ripple 0.6s ease-out';
+                    
+                    this.style.position = 'relative';
+                    this.style.overflow = 'hidden';
+                    this.appendChild(ripple);
+                    
+                    setTimeout(() => ripple.remove(), 600);
+                });
+            });
+        });
+        
+        // Ripple animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
 
 </body>
 </html>
